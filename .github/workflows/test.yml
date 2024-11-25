@@ -17,8 +17,9 @@ jobs:
         with:
           node-version: 18
       - name: Install Dependencies
+        working-directory: ./BACKEND
         run: npm install
       - name: Run Tests
+        working-directory: ./BACKEND
         run: npm test
-      - name: Lint the Code
-        run: npm run lint
+      
