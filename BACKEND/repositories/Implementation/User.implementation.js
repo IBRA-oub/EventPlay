@@ -1,6 +1,7 @@
 const User = require("../../models/User");
 const bcrypt = require("bcryptjs");
 const UserInterface = require("../Interface/User.interface");
+const jwt = require('jsonwebtoken');
 
 class UserRepository extends UserInterface {
     create = async (nom, email, password, city) => {
@@ -28,6 +29,31 @@ class UserRepository extends UserInterface {
             throw error;
         }
 
+    }
+
+    loginUser = async (email, password) => {
+        try {
+            const findUser = await User.findOne({ email });
+            if (findUser && bcrypt.compare(password, findUser.password)) {
+                const accessToken = jwt.sign({
+                    user: {
+                        nom: findUser.nom,
+                        email: findUser.email,
+                        role: findUser.role,
+                        city: findUser.city,
+                        id: findUser.id,
+                    },
+                }, process.env.ACCESSS_TOKEN_SECRET, { expiresIn: '3h' });
+                return {accessToken}
+
+            }else{
+                throw new Error("Email or password is not valid");  
+            }
+
+        } catch (error) {
+            throw error;
+
+        }
     }
 }
 

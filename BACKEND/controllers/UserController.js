@@ -18,6 +18,21 @@ class UserController {
             res.status(400).json({ message: err.message });
         }
     }
+
+    loginUser = async(req,res)=>{
+        try {
+            const { email, password } = req.body;
+            const response = await this.userService.loginUser(email, password);
+            if (response) {
+                res.status(201).json(response)
+            } else {
+                res.status(400).json({ message: 'User not found' });
+            }
+            
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
+    }
 }
 
 module.exports = new UserController()
