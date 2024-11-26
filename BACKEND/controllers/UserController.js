@@ -60,6 +60,21 @@ class UserController {
         }
 
     }
+
+    updateUser = async (req, res) => {
+        const userData = req.body;
+        const userId = req.params.id;
+        try {
+
+            const response = await this.userService.updateUser(userId, userData)
+            if (response) {
+                return res.status(201).json(response);
+            }
+        } catch (error) {
+            return res.status(500).json({ message: 'update Failed' })
+        }
+
+    }
 }
 
 module.exports = new UserController()

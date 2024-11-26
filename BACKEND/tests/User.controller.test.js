@@ -163,7 +163,7 @@ describe('userController', () => {
             expect(res.json).toHaveBeenCalledWith({ message: 'users Not Found' });
         });
     });
-    
+
     describe('findUser', () => {
         it('should return 200 and a user if successful', async () => {
             const mockUser = { _id: '1', name: 'John Doe', email: 'john@example.com' };
@@ -188,6 +188,29 @@ describe('userController', () => {
 
     });
 
+    describe('updateUser', () => {
+        it('should return 201 and the updated user if update is successful', async () => {
+            const updatedUser = { _id: '1', name: 'John Doe', email: 'john@example.com' };
+            UserRepository.prototype.updateUser.mockResolvedValue(updatedUser);
+    
+            await userController.updateUser(req, res);
+    
+            expect(UserRepository.prototype.updateUser).toHaveBeenCalledWith('1', req.body); 
+            expect(res.status).toHaveBeenCalledWith(201);
+            expect(res.json).toHaveBeenCalledWith(updatedUser);
+        });
+    
+        it('should return 500 and an error message if an error occurs', async () => {
+            UserRepository.prototype.updateUser.mockRejectedValue(new Error('Database error'));
+    
+            await userController.updateUser(req, res);
+    
+            expect(UserRepository.prototype.updateUser).toHaveBeenCalledWith('1', req.body); 
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ message: 'update Failed' });
+        });
+
+    });
 
 
 

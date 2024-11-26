@@ -78,6 +78,31 @@ class UserRepository extends UserInterface {
             throw new error
         }
     }
+
+    updateUser = async (userId, userData) => {
+        try {
+            console.log(userData,userId);
+            if (userData.password) {
+
+                const salt = await bcrypt.genSalt(10);
+                userData.password = await bcrypt.hash(userData.password, salt);
+            }
+            const res = await User.findById(userId)
+            if (res) {
+                return User.findByIdAndUpdate(
+                    userId,
+                    userData,
+                    { new: true }
+                );
+            } else {
+                throw new Error('User not found');
+            }
+        } catch (error) {
+            throw error
+        }
+
+           
+    };
 }
 
 module.exports = UserRepository;

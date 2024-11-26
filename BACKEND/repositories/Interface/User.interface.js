@@ -19,7 +19,7 @@ class UserInterface{
     async getAllUser(){
         throw new Error('Must be Implemented!!');
     }
-    async updateUser(userId, userData, file){
+    async updateUser(userId, userData){
         throw new Error('Must be Implemented!!');
     }
     async deleteUser(userId){

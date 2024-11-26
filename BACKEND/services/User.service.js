@@ -16,8 +16,8 @@ class UserService {
     async getAllUser(){
         return this.UserRepository.getAllUser()
     }
-    async updateUser(userId, userData, file){
-        return this.UserRepository.updateUser(userId, userData, file)
+    async updateUser(userId, userData){
+        return this.UserRepository.updateUser(userId, userData)
     }
     async deleteUser(userId){
         return this.UserRepository.deleteUser(userId)
