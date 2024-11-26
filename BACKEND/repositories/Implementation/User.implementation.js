@@ -44,15 +44,29 @@ class UserRepository extends UserInterface {
                         id: findUser.id,
                     },
                 }, process.env.ACCESSS_TOKEN_SECRET, { expiresIn: '3h' });
-                return {accessToken}
+                return { accessToken }
 
-            }else{
-                throw new Error("Email or password is not valid");  
+            } else {
+                throw new Error("Email or password is not valid");
             }
 
         } catch (error) {
             throw error;
 
+        }
+    }
+
+    getAllUser = async() => {
+        try {
+            const response = await User.find()
+            console.log(response)
+            if (response) {
+                return response;
+            } else {
+                throw err;
+            }
+        } catch (error) {
+            throw error
         }
     }
 }

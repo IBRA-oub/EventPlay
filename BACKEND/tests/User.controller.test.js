@@ -108,8 +108,8 @@ describe('userController', () => {
             const mockUser = { _id: '1', email: 'john@example.com', password: 'hashedpassword', nom: 'John Doe' };
 
             jest.spyOn(UserRepository.prototype, 'loginUser').mockImplementation(async (email, password) => {
-              
-                const mockFindUser = mockUser; 
+
+                const mockFindUser = mockUser;
                 if (mockFindUser) {
                     const isPasswordValid = await bcrypt.compare(password, mockFindUser.password);
                     if (isPasswordValid) {
@@ -123,7 +123,7 @@ describe('userController', () => {
                 throw new Error('Invalid credentials');
             });
 
-            bcrypt.compare.mockResolvedValue(true); 
+            bcrypt.compare.mockResolvedValue(true);
 
             await userController.loginUser(req, res);
 
@@ -136,5 +136,31 @@ describe('userController', () => {
 
 
     });
+
+
+    it('should return 200 and a list of users if successful', async () => {
+        const mockUsers = [
+            { _id: '1', name: 'John Doe', email: 'john@example.com' },
+            { _id: '2', name: 'Jane Doe', email: 'jane@example.com' },
+        ];
+        UserRepository.prototype.getAllUser.mockResolvedValue(mockUsers);
+
+        await userController.getAllUser(req, res);
+
+        expect(UserRepository.prototype.getAllUser).toHaveBeenCalled();
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith(mockUsers);
+    });
+
+    it('should return 500 and an error message if an error occurs', async () => {
+        UserRepository.prototype.getAllUser.mockRejectedValue(new Error('Database error'));
+
+        await userController.getAllUser(req, res);
+
+        expect(UserRepository.prototype.getAllUser).toHaveBeenCalled();
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ message: 'users Not Found' });
+    });
+
 
 });

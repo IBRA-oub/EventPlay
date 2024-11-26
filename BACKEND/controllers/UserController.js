@@ -33,6 +33,19 @@ class UserController {
             res.status(400).json({ message: error.message });
         }
     }
+
+    getAllUser = async (req, res)=>{
+        try {
+            const users = await this.userService.getAllUser()
+            if(users){
+                return res.status(200).json(users)
+            }
+            
+        } catch (error) {
+            return res.status(500).json({message : 'users Not Found'})
+        }
+      
+    }
 }
 
 module.exports = new UserController()
