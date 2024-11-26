@@ -69,6 +69,15 @@ class UserRepository extends UserInterface {
             throw error
         }
     }
+
+    findUser = async(userId)=>{
+        try {
+            return User.findOne({"_id":userId})
+            
+        } catch (error) {
+            throw new error
+        }
+    }
 }
 
 module.exports = UserRepository;

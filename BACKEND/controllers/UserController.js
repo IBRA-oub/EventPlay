@@ -19,7 +19,7 @@ class UserController {
         }
     }
 
-    loginUser = async(req,res)=>{
+    loginUser = async (req, res) => {
         try {
             const { email, password } = req.body;
             const response = await this.userService.loginUser(email, password);
@@ -28,23 +28,37 @@ class UserController {
             } else {
                 res.status(400).json({ message: 'User not found' });
             }
-            
+
         } catch (error) {
             res.status(400).json({ message: error.message });
         }
     }
 
-    getAllUser = async (req, res)=>{
+    getAllUser = async (req, res) => {
         try {
             const users = await this.userService.getAllUser()
-            if(users){
+            if (users) {
                 return res.status(200).json(users)
             }
-            
+
         } catch (error) {
-            return res.status(500).json({message : 'users Not Found'})
+            return res.status(500).json({ message: 'users Not Found' })
         }
-      
+
+    }
+
+    findUser = async (req, res) => {
+        const userId = req.params.id;
+        try {
+
+            const user = await this.userService.findUser(userId)
+            if (user) {
+                res.status(200).json(user);
+            }
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+
     }
 }
 

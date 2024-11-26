@@ -10,6 +10,7 @@ describe('userController', () => {
 
     beforeEach(() => {
         req = {
+            params: { id: '1' },
             body: {},
         };
         res = {
@@ -137,30 +138,57 @@ describe('userController', () => {
 
     });
 
+    describe('getAllUser', () => {
+        it('should return 200 and a list of users if successful', async () => {
+            const mockUsers = [
+                { _id: '1', name: 'John Doe', email: 'john@example.com' },
+                { _id: '2', name: 'Jane Doe', email: 'jane@example.com' },
+            ];
+            UserRepository.prototype.getAllUser.mockResolvedValue(mockUsers);
 
-    it('should return 200 and a list of users if successful', async () => {
-        const mockUsers = [
-            { _id: '1', name: 'John Doe', email: 'john@example.com' },
-            { _id: '2', name: 'Jane Doe', email: 'jane@example.com' },
-        ];
-        UserRepository.prototype.getAllUser.mockResolvedValue(mockUsers);
+            await userController.getAllUser(req, res);
 
-        await userController.getAllUser(req, res);
+            expect(UserRepository.prototype.getAllUser).toHaveBeenCalled();
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(mockUsers);
+        });
 
-        expect(UserRepository.prototype.getAllUser).toHaveBeenCalled();
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith(mockUsers);
+        it('should return 500 and an error message if an error occurs', async () => {
+            UserRepository.prototype.getAllUser.mockRejectedValue(new Error('Database error'));
+
+            await userController.getAllUser(req, res);
+
+            expect(UserRepository.prototype.getAllUser).toHaveBeenCalled();
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ message: 'users Not Found' });
+        });
+    });
+    
+    describe('findUser', () => {
+        it('should return 200 and a user if successful', async () => {
+            const mockUser = { _id: '1', name: 'John Doe', email: 'john@example.com' };
+            UserRepository.prototype.findUser.mockResolvedValue(mockUser);
+
+            await userController.findUser(req, res);
+
+            expect(UserRepository.prototype.findUser).toHaveBeenCalledWith('1'); // Vérifie que l'ID est passé au service
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.json).toHaveBeenCalledWith(mockUser);
+        });
+
+        it('should return 500 and an error message if an error occurs', async () => {
+            UserRepository.prototype.findUser.mockRejectedValue(new Error('Database error'));
+
+            await userController.findUser(req, res);
+
+            expect(UserRepository.prototype.findUser).toHaveBeenCalledWith('1'); // Vérifie que l'ID est passé au service
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.json).toHaveBeenCalledWith({ message: 'Database error' });
+        });
+
     });
 
-    it('should return 500 and an error message if an error occurs', async () => {
-        UserRepository.prototype.getAllUser.mockRejectedValue(new Error('Database error'));
 
-        await userController.getAllUser(req, res);
-
-        expect(UserRepository.prototype.getAllUser).toHaveBeenCalled();
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ message: 'users Not Found' });
-    });
 
 
 });
